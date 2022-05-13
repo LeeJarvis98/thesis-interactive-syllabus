@@ -21,7 +21,6 @@ export const CurriculumCreatePage = () => {
   return <CurriculumDragAndDrop />;
 };
 
-// Layout for specific pages
 CurriculumCreatePage.getLayout = (
   page: ReactElement<any, string | JSXElementConstructor<any>>
 ) => {
