@@ -1,15 +1,10 @@
 import type { Node, Edge } from "react-flow-renderer";
-import type {
-  IRandomCoursesReturn,
-  ICourseItemSimple,
-} from "src/types/course.type";
-import type { IRandomCurriculumDetailItemReturn } from "src/types/curriculum.type";
+import type { ICourseItemSimple } from "src/types/Course.type";
+import type { IRandomCurriculumDetailItemReturn } from "src/types/Curriculum.type";
 
 import { Position, MarkerType } from "react-flow-renderer";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-
-import { CourseRelationship } from "src/constants/course.const";
 
 interface IGetReactFlowElements extends IRandomCurriculumDetailItemReturn {
   allCourses: Record<string, ICourseItemSimple>;
@@ -46,7 +41,7 @@ export const getReactFlowElements = ({
         const { id, credit, name, relationship, type } = allCourses[courseId];
 
         courseOrders.push(courseId);
-        console.log(courseOrders.length);
+        // console.log(courseOrders.length);
 
         nodesTemp.push({
           // id: courseId,
@@ -79,7 +74,7 @@ export const getReactFlowElements = ({
     });
   });
 
-  console.log(courseOrders);
+  // console.log(courseOrders);
 
   // Step 2: Render edge for course relationship
   allYearIdsOrder.forEach((yearId, yearIndex) => {

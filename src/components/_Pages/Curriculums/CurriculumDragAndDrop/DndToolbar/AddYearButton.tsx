@@ -4,13 +4,19 @@ import AddIcon from "@mui/icons-material/Add";
 
 import { useAppDispatch } from "src/hooks/useStore";
 
-import { addCurriculumDetailYear } from "src/redux/curriculums.slice";
+import { CurriculumCommandType } from "src/constants/curriculum.const";
+import { commitChangeToHistory } from "src/redux/curriculumChangeHistory.slice";
 
 const AddYearButton = () => {
   const dispatch = useAppDispatch();
 
   const handleClick = () => {
-    dispatch(addCurriculumDetailYear());
+    dispatch(
+      commitChangeToHistory({
+        type: CurriculumCommandType.ADD_YEAR,
+        patch: {},
+      })
+    );
   };
 
   return (

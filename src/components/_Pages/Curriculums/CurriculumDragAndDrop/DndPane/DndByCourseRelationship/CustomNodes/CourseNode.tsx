@@ -1,8 +1,7 @@
 import { FC } from "react";
-import type { DropResult } from "react-beautiful-dnd";
 import type { Edge } from "react-flow-renderer";
 
-import { memo, useState, useRef } from "react";
+import { memo, useState } from "react";
 import { Handle, Position } from "react-flow-renderer";
 import ClickAwayListener from "@mui/base/ClickAwayListener";
 import Box from "@mui/material/Box";
@@ -19,16 +18,13 @@ import _cloneDeep from "lodash/cloneDeep";
 
 import { style } from "src/constants/component-specs/curriculum-edit-by-years";
 import { useAppSelector, useAppDispatch } from "src/hooks/useStore";
+import { setModeEditCourseRelationship } from "src/redux/courses.slice";
 import {
-  removeSelectedCourse,
-  setModeEditCourseRelationship,
-} from "src/redux/courses.slice";
-import {
-  removeCurriculumDetailCourse,
-  moveCurriculumDetailCourse,
   setShowCourseRelationship,
   setModalCourseDetail,
 } from "src/redux/curriculums.slice";
+import { commitChangeToHistory } from "src/redux/curriculumChangeHistory.slice";
+import { CurriculumCommandType } from "src/constants/curriculum.const";
 
 const configCourseTile = style.courseTile;
 
@@ -48,7 +44,6 @@ const CourseNode: FC<CourseNodeProps> = ({
 }) => {
   const { yearId, semId, courseId, index } = data;
 
-  const ref = useRef(null);
   const reactFlowInstance = useReactFlow();
   const edges: Edge[] = useEdges();
 
@@ -69,7 +64,6 @@ const CourseNode: FC<CourseNodeProps> = ({
   const { id, name, credit } = courseDetail;
 
   const handleClick = (event: any) => {
-    // console.log(event);
     setAnchorEl(event.currentTarget);
   };
 
@@ -77,51 +71,53 @@ const CourseNode: FC<CourseNodeProps> = ({
     setAnchorEl(null);
   };
 
-  // const handleSelect = () => {
-  //   // this.props.onSelect();
-  // };
-
   const handleMoveUpCourse = () => {
-    const payload: DropResult = {
-      destination: {
-        droppableId: `${yearId} ${semId}`,
-        index: index - 1,
-      },
-      draggableId: id,
-      mode: "FLUID",
-      reason: "DROP",
-      source: {
-        droppableId: `${yearId} ${semId}`,
-        index: index,
-      },
-      type: "move-semester-course",
-    };
     handleClose();
-    dispatch(moveCurriculumDetailCourse(payload));
+    dispatch(
+      commitChangeToHistory({
+        type: CurriculumCommandType.CHANGE_COURSE_BETWEEN_TWO_SEMESTER,
+        patch: {
+          courseId: courseId,
+          sourceYearId: yearId,
+          sourceSemId: semId,
+          sourceTakeoutIndex: index,
+          targetYearId: yearId,
+          targetSemId: semId,
+          targetInsertIndex: index - 1,
+        },
+      })
+    );
   };
 
   const handleMoveDownCourse = () => {
-    const payload: DropResult = {
-      destination: {
-        droppableId: `${yearId} ${semId}`,
-        index: index + 1,
-      },
-      draggableId: id,
-      mode: "FLUID",
-      reason: "DROP",
-      source: {
-        droppableId: `${yearId} ${semId}`,
-        index: index,
-      },
-      type: "move-semester-course",
-    };
     handleClose();
-    dispatch(moveCurriculumDetailCourse(payload));
+    dispatch(
+      commitChangeToHistory({
+        type: CurriculumCommandType.CHANGE_COURSE_BETWEEN_TWO_SEMESTER,
+        patch: {
+          courseId: courseId,
+          sourceYearId: yearId,
+          sourceSemId: semId,
+          sourceTakeoutIndex: index,
+          targetYearId: yearId,
+          targetSemId: semId,
+          targetInsertIndex: index + 1,
+        },
+      })
+    );
   };
 
   const handleRemoveCourse = () => {
-    dispatch(removeCurriculumDetailCourse({ yearId, semId, courseId }));
-    dispatch(removeSelectedCourse(courseId));
+    dispatch(
+      commitChangeToHistory({
+        type: CurriculumCommandType.REMOVE_COURSE_FROM_SEMESTER,
+        patch: {
+          yearId,
+          semId,
+          courseId,
+        },
+      })
+    );
   };
 
   const handleEditCourseRelationship = () => {
@@ -202,20 +198,12 @@ const CourseNode: FC<CourseNodeProps> = ({
       touchEvent="onTouchEnd"
       onClickAway={handleClickAwayCourse}
     >
-      <Box
-      // id={`${yearId}-${semId}-${courseId}`}
-      // key={`${yearId}-${semId}-${courseId}`}
-      // ref={ref}
-      >
+      <Box>
         <Handle
           id="relationshipSend"
           type="source"
           position={Position.Right}
           style={{
-            // ...(modeEditCourseRelationship.enabled &&
-            // modeEditCourseRelationship.courseId === courseId
-            //   ? { visibility: "visible", width: "16px", height: "16px" }
-            //   : { visibility: "hidden", width: "1px", height: "1px" }),
             visibility:
               modeEditCourseRelationship.enabled &&
               modeEditCourseRelationship.courseId === courseId
@@ -224,7 +212,6 @@ const CourseNode: FC<CourseNodeProps> = ({
             width: "16px",
             height: "16px",
             left: "102px",
-            // right: "0px",
             zIndex: 1000,
             border: "2px solid rgba(224, 67, 67, 1)",
             backgroundColor: "white",
@@ -242,7 +229,7 @@ const CourseNode: FC<CourseNodeProps> = ({
           sx={(theme) => ({
             width: theme.spacing(configCourseTile.width),
             padding: theme.spacing(configCourseTile.padding),
-            // marginY: theme.spacing(1),
+
             backgroundColor:
               modeEditCourseRelationship.courseId === courseId
                 ? "rgba(25, 118, 210, 1)"
@@ -343,10 +330,6 @@ const CourseNode: FC<CourseNodeProps> = ({
           position={Position.Left}
           id="relationshipReceive"
           style={{
-            // ...(modeEditCourseRelationship.enabled &&
-            // modeEditCourseRelationship.courseId !== courseId
-            //   ? { visibility: "visible", width: "16px", height: "16px" }
-            //   : { visibility: "hidden", width: "1px", height: "1px" }),
             visibility:
               modeEditCourseRelationship.enabled &&
               modeEditCourseRelationship.courseId !== courseId

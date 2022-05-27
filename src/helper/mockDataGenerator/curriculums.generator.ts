@@ -1,8 +1,8 @@
 import type {
   ICourseItemSimple,
   ICourseTypeDistribution,
-} from "src/types/course.type";
-import type { IRange } from "src/types/others.type";
+} from "src/types/Course.type";
+import type { IRange } from "src/types/Others.type";
 import type {
   ICurriculumItemYear,
   ICurriculumItemSimple,
@@ -10,7 +10,7 @@ import type {
   ICurriculumItemSemester,
   IRandomCurriculumDetailParam,
   IRandomCurriculumDetailItemReturn,
-} from "src/types/curriculum.type";
+} from "src/types/Curriculum.type";
 
 import faker from "@faker-js/faker";
 import _sample from "lodash/sample";
@@ -33,14 +33,14 @@ export const generateRandomCurriculumDetail = ({
   electiveGroups = {},
   electiveGroupIds = [],
 }: IRandomCurriculumDetailParam): IRandomCurriculumDetailItemReturn => {
-  console.log("input");
-  console.log({
-    allCourses,
-    allCourseIds,
-    randomYearCount,
-    semesterPerYearCount,
-    randomCreditCountPerSemester,
-  });
+  // console.log("input");
+  // console.log({
+  //   allCourses,
+  //   allCourseIds,
+  //   randomYearCount,
+  //   semesterPerYearCount,
+  //   randomCreditCountPerSemester,
+  // });
   const yearCount = faker.datatype.number(randomYearCount);
   let courseIdsCopy = [...allCourseIds];
 
