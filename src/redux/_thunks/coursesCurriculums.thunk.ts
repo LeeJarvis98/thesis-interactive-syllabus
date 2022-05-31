@@ -6,6 +6,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { CourseType } from "src/constants/course.const";
 import {
+  loadRandomCurriculums,
   loadRandomCurriculumDetail,
   resetState as resetCurriculumsState,
 } from "src/redux/curriculums.slice";
@@ -36,14 +37,14 @@ export const initRandomCurriculumDetailPageData = createAsyncThunk(
     try {
       // #region Step 2: random courses and curriculums
       const majorsResponse = await dispatch(
-        loadAllRandomMajors({ min: 1, max: 15 })
+        loadAllRandomMajors({ min: 1, max: 9 })
       );
       const majorsPayload = majorsResponse.payload as IRandomMajorsReturn;
 
       const coursesResponse = await dispatch(
         loadAllRandomCourses({
           allMajorIds: majorsPayload.allMajorIds,
-          randomCourseCount: { min: 15, max: 100 },
+          randomCourseCount: { min: 9, max: 100 },
           nameLength: { min: 1, max: 3 },
           creditCount: {
             theory: { min: 0, max: 5 },
@@ -51,9 +52,9 @@ export const initRandomCurriculumDetailPageData = createAsyncThunk(
           },
           courseRelationship: {
             preRequisite: { min: 0, max: 1 },
-            previous: { min: 0, max: 1 },
-            coRequisite: { min: 0, max: 1 },
-            placeholder: { min: 0, max: 1 },
+            previous: { min: 0, max: 0 },
+            coRequisite: { min: 0, max: 0 },
+            placeholder: { min: 0, max: 0 },
           },
           courseTypeDistribution: [
             {
@@ -90,9 +91,9 @@ export const initRandomCurriculumDetailPageData = createAsyncThunk(
         loadRandomCurriculumDetail({
           allCourses: coursesPayload.allCourses,
           allCourseIds: coursesPayload.allCourseIds,
-          randomYearCount: { min: 1, max: 3 },
+          randomYearCount: { min: 1, max: 2 },
           semesterPerYearCount: 3,
-          courseCountPerSemester: { min: 0, max: 6 },
+          courseCountPerSemester: { min: 0, max: 4 },
           randomCreditCountPerSemester: undefined,
           electiveGroups: {},
           electiveGroupIds: [],
@@ -123,6 +124,25 @@ export const initRandomCurriculumDetailPageData = createAsyncThunk(
       // #region Step 4: Start detecting curriculums and courses changes
       dispatch(setupDefaultCurriculum());
       dispatch(setupDefaultCourses());
+      // #endregion
+
+      // #region Step 5:
+      dispatch(
+        loadRandomCurriculums({
+          randomCurriculumCount: {
+            min: 1,
+            max: 9,
+          },
+          allCourses: coursesPayload.allCourses,
+          allCourseIds: coursesPayload.allCourseIds,
+          randomYearCount: { min: 1, max: 3 },
+          semesterPerYearCount: 3,
+          courseCountPerSemester: { min: 0, max: 6 },
+          randomCreditCountPerSemester: undefined,
+          electiveGroups: {},
+          electiveGroupIds: [],
+        })
+      );
       // #endregion
 
       thunkAPI.fulfillWithValue("success");
