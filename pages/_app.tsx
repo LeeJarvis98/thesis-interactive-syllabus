@@ -43,7 +43,7 @@ const MyApp = (props: MyAppProps) => {
     <StoreProvider store={store}>
       <CacheProvider value={emotionCache}>
         <Head>
-          <title>{pageTitle ?? "Digi Curriculum"}</title>
+          <title>{pageTitle ?? "Interactive Syllabus"}</title>
           <link rel="shortcut icon" href="/favicon.ico" />
           <meta name="viewport" content="initial-scale=1, width=device-width" />
         </Head>
