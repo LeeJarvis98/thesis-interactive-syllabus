@@ -1,9 +1,4 @@
-export interface IMajorSimple {
+export interface IMajor {
   id: string;
   name: string;
-}
-
-export interface IRandomMajorsReturn {
-  allMajors: Record<string, IMajorSimple>;
-  allMajorIds: string[];
 }
