@@ -134,7 +134,7 @@ const CurriculumTable = () => {
       >
         <Box className="toolbar--left" flexGrow={0}></Box>
         <ButtonLoadSampleData size="large" />
-        <ButtonRandom size="large" />
+        {/* <ButtonRandom size="large" /> */}
 
         <Box className="toolbar--right" flexGrow={1}></Box>
         <Link href="/curriculums/new" type="button">
