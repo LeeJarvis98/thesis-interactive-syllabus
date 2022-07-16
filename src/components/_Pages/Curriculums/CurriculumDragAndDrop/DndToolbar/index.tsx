@@ -29,13 +29,13 @@ const DndToolbar = () => {
       }}
     >
       <Box className="toolbar--left" flexGrow={0}></Box>
-      <ViewButton />
+      {/* <ViewButton /> */}
 
       {dndViewMode === CurriculumDndType.DND_BY_COURSE_RELATIONSHIP && (
         <>
-          <Divider orientation="vertical" variant="middle" flexItem />
           <ButtonAddYear />
           <ButtonManageYears />
+          <Divider orientation="vertical" variant="middle" flexItem />
           <SwitchShowCourseRelationship />
         </>
       )}
